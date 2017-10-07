@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 
 
 
@@ -7,7 +7,7 @@ class ARObject(models.Model):
 	owner = models.TextField()
 	description = models.TextField()
 	location = models.PointField()
-	asset = models.FileField(upload_to='media')		
+	asset = models.FileField(null=True)		
 	
 	class Meta:
-		ordering = ('timeCreated')
+		ordering = ('timeCreated',)

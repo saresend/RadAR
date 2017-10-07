@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'rest_framework',
     'rest_framework_gis',
     'radDB.apps.RaddbConfig'
@@ -78,10 +79,24 @@ WSGI_APPLICATION = 'radAR.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'radar_db',
+        'USER': 'radar_admin',
+        'PASSWORD' : 'blockchain',
+        'HOST': '127.0.0.1',
     }
 }
+
+# Filepath for GDAL library
+GDAL_LIBRARY_PATH = "/Users/SamResendez/gdal-1.11.2/.libs/libgdal.dylib"
+
+# Filepath for GEOS library
+GEOS_LIBRARY_PATH = "/Users/SamResendez/geos-3.4.2/capi/.libs/libgeos_c.dylib"
+
+# Media Filepath
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
 
 
 # Password validation
