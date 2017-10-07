@@ -1,10 +1,14 @@
+
+
 from django.conf.urls import url
-from rest_framework.urlpatterns import format_suffix_patterns
 from radDB import views
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 urlpatterns = [
-	url(r'^radDB/$', views.ARObjectList.as_view()),
-	url(r'^radDB/(?P<pk>[0-9]+)/$', views.ARObjectDetail.as_view()),
-]
+    url(r'^arobject/$', views.ARObjectList.as_view()),
+    url(r'^arobject/(?P<pk>[0-9]+)/$', views.ARObjectUpdate.as_view()),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+

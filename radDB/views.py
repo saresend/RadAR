@@ -1,44 +1,30 @@
-from rest_framework import status
-from rest_framework.views import APIView
-from django.http import Http404
-from rest_framework.response import Response
+
+from django.shortcuts import render
+from rest_framework import generics
 from radDB.models import ARObject
 from radDB.serializers import ARObjectSerializer
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+# Create your views here.
 
-class ARObjectList(APIView):
-	def get(self, request, format=None):
-		arObjects = ARObject.objects.all()
-		serializer = ARObjectSerializer(arObjects, many=True)
-		return Response(serializer.data)	
 
-	def post(self, request, format=None):
-		serializer = ARObjectSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-class ARObjectDetail(APIView):
-	def get_object(self, pk):
-		try:
-			arObject = ARObject.objects.get(pk=pk)
-		except ARObject.DoesNotExist:
-			return Response(status=status.HTTP_404_NOT_FOUND)
+class ARObjectList(generics.ListCreateAPIView):
 
-	def get(self, request, pk, format=None):
-		arObject = self.get_object(pk)
-		serializer = ARObjectSerializer(arObject)
-		return Response(serializer.data)
-	
-	def put(self, request, pk, format=None):
-		arObject = self.get_object(pk)
-		serializer = ARObjectSerializer(arObject, data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        lat = self.request.GET.get('lat') or None
+        lng = self.request.GET.get('lng') or None
+        if lat == None or lng == None:
+            return ARObject.objects.all()
+        pnt = GEOSGeometry('POINT(' + str(lat) + ' ' + str(lng) + ')', srid=4326)
+        queryset = ARObject.objects.filter(location__distance_lte=(pnt, 1000))
+        return queryset
+        
+    serializer_class = ARObjectSerializer
 
-	def delete(self, request, pk, format=None):
-		arObject = self.get_object(pk)
-		arObject.delete()
-		return Response(status=HTTP_204_NO_CONTENT)	
+
+
+class ARObjectUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ARObject.objects.all()
+    serializer_class = ARObjectSerializer
+
