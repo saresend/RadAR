@@ -7,9 +7,9 @@ from radDB.serializers import ARObjectSerializer
 
 class ARObjectList(APIView):
 	def get(self, request, format=None):
-		 arObjects = ARObject.objects.all()
-                 serializer = ARObjectSerializer(arObjects, many=True)
-                 return Response(serializer.data)		
+		arObjects = ARObject.objects.all()
+		serializer = ARObjectSerializer(arObjects, many=True)
+		return Response(serializer.data)	
 
 	def post(self, request, format=None):
 		serializer = ARObjectSerializer(data=request.data)
