@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from rest_framework import generics
 from radDB.models import ARObject
@@ -26,3 +27,4 @@ class ARObjectList(generics.ListCreateAPIView):
 class ARObjectUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = ARObject.objects.all()
     serializer_class = ARObjectSerializer
+
