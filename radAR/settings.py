@@ -25,7 +25,7 @@ SECRET_KEY = '4k9qhumv05z2tvptorm+6_um#(^b(l9^_+zrify=2e!4=sjasi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.241.200.251']
 
 
 # Application definition
@@ -88,16 +88,16 @@ DATABASES = {
 }
 
 # Filepath for GDAL library
-GDAL_LIBRARY_PATH = "/Users/SamResendez/gdal-1.11.2/.libs/libgdal.dylib"
+#GDAL_LIBRARY_PATH = "/Users/SamResendez/gdal-1.11.2/.libs/libgdal.dylib"
 
 # Filepath for GEOS library
-GEOS_LIBRARY_PATH = "/Users/SamResendez/geos-3.4.2/capi/.libs/libgeos_c.dylib"
+#GEOS_LIBRARY_PATH = "/Users/SamResendez/geos-3.4.2/capi/.libs/libgeos_c.dylib"
 
 # Media Filepath
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
-
+STATIC_ROOT = '/cssfiles/'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
