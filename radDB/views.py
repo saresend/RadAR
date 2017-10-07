@@ -1,44 +1,44 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
+from rest_framework import status
+from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework.response import Response
 from radDB.models import ARObject
 from radDB.serializers import ARObjectSerializer
 
-@csrf_exempt
-def ar_object_list(request):
-	if request.method == 'GET':
-		arObjects = ARObject.objects.all()
-		serializer = ARObjectSerializer(arObjects, many=True)
-		return JsonResponse(serializer.data, safe=False)
+class ARObjectList(APIView):
+	def get(self, request, format=None):
+		 arObjects = ARObject.objects.all()
+                 serializer = ARObjectSerializer(arObjects, many=True)
+                 return Response(serializer.data)		
 
-	elif request.method == 'POST':
-		data = JSONParser().parse(request)
-		serializer = ARObjectSerializer(data=data)
+	def post(self, request, format=None):
+		serializer = ARObjectSerializer(data=request.data)
 		if serializer.is_valid():
 			serializer.save()
-			return JsonResponse(serializer.data, status=201)
-		return JsonResponse(serializer.errors, status=400)
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-def ar_object_detail(request, pk):
-	try:
-		arObject = ARObject.objects.get(pk=pk)
-	except ARObject.DoesNotExist:
-		return HttpResponse(status=404)
+class ARObjectDetail(APIView):
+	def get_object(self, pk):
+		try:
+			arObject = ARObject.objects.get(pk=pk)
+		except ARObject.DoesNotExist:
+			return Response(status=status.HTTP_404_NOT_FOUND)
 
-	if request.method == 'GET':
+	def get(self, request, pk, format=None):
+		arObject = self.get_object(pk)
 		serializer = ARObjectSerializer(arObject)
-		return JsonResponse(serializer.data)
+		return Response(serializer.data)
 	
-	elif request.method == 'PUT':
-		data = JSONParser().parse(request)
-		serializer = ARObjectSerializer(arObject, data=data)
+	def put(self, request, pk, format=None):
+		arObject = self.get_object(pk)
+		serializer = ARObjectSerializer(arObject, data=request.data)
 		if serializer.is_valid():
 			serializer.save()
-			return JsonResponse(serializer.data)
-		return JsonResponse(serializer.errors, status=400)
+			return Response(serializer.data)
+		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-	elif request.method == 'DELETE':
+	def delete(self, request, pk, format=None):
+		arObject = self.get_object(pk)
 		arObject.delete()
-		return HttpResponse(status=204)	
+		return Response(status=HTTP_204_NO_CONTENT)	
